@@ -14,7 +14,181 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      inquiries: {
+        Row: {
+          artisan_id: string
+          created_at: string
+          customer_email: string
+          customer_name: string
+          id: string
+          message: string
+          product_id: string | null
+          status: string | null
+        }
+        Insert: {
+          artisan_id: string
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          id?: string
+          message: string
+          product_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          artisan_id?: string
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          id?: string
+          message?: string
+          product_id?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inquiries_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_featured: boolean | null
+          price: number | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          price?: number | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          price?: number | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          artisan_name: string | null
+          avatar_url: string | null
+          bio: string | null
+          business_name: string | null
+          craft_type: string | null
+          created_at: string
+          facebook: string | null
+          heritage_story: string | null
+          id: string
+          instagram: string | null
+          location: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          artisan_name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          business_name?: string | null
+          craft_type?: string | null
+          created_at?: string
+          facebook?: string | null
+          heritage_story?: string | null
+          id?: string
+          instagram?: string | null
+          location?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          artisan_name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          business_name?: string | null
+          craft_type?: string | null
+          created_at?: string
+          facebook?: string | null
+          heritage_story?: string | null
+          id?: string
+          instagram?: string | null
+          location?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          artisan_id: string
+          created_at: string
+          customer_email: string | null
+          customer_name: string
+          id: string
+          is_approved: boolean | null
+          message: string
+          product_id: string | null
+          rating: number | null
+        }
+        Insert: {
+          artisan_id: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name: string
+          id?: string
+          is_approved?: boolean | null
+          message: string
+          product_id?: string | null
+          rating?: number | null
+        }
+        Update: {
+          artisan_id?: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          id?: string
+          is_approved?: boolean | null
+          message?: string
+          product_id?: string | null
+          rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "testimonials_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
