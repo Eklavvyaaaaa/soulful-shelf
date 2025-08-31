@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Heart, Sparkles, Camera, Share2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <section className="min-h-screen bg-earth-gradient flex items-center justify-center px-4 py-16">
       <div className="max-w-4xl mx-auto text-center space-y-8">
@@ -32,7 +34,11 @@ const Hero = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-craft">
+          <Button 
+            size="lg" 
+            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-craft"
+            onClick={() => navigate('/auth')}
+          >
             <Heart className="w-5 h-5 mr-2" />
             Start Your Journey
           </Button>
