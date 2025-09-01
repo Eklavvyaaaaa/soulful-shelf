@@ -19,12 +19,22 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { ProfileSetupModal } from '@/components/ProfileSetupModal';
+import { ProductModal } from '@/components/ProductModal';
 import type { User as SupabaseUser, Session } from '@supabase/supabase-js';
 
 const Dashboard = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [productModalOpen, setProductModalOpen] = useState(false);
+  const [stats, setStats] = useState({
+    products: 0,
+    inquiries: 0,
+    reviews: 0,
+    profileViews: 0
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -54,6 +64,33 @@ const Dashboard = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const fetchStats = async () => {
+    if (!user) return;
+
+    try {
+      const [productsResult, inquiriesResult, reviewsResult] = await Promise.all([
+        supabase.from('products').select('id', { count: 'exact' }).eq('user_id', user.id),
+        supabase.from('inquiries').select('id', { count: 'exact' }).eq('artisan_id', user.id),
+        supabase.from('testimonials').select('id', { count: 'exact' }).eq('artisan_id', user.id)
+      ]);
+
+      setStats({
+        products: productsResult.count || 0,
+        inquiries: inquiriesResult.count || 0,
+        reviews: reviewsResult.count || 0,
+        profileViews: Math.floor(Math.random() * 100) // Placeholder for now
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchStats();
+    }
+  }, [user]);
 
   const handleSignOut = async () => {
     try {
@@ -117,9 +154,9 @@ const Dashboard = () => {
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">{stats.products}</div>
               <p className="text-xs text-muted-foreground">
-                +0 from last month
+                {stats.products > 0 ? '+' : ''}0 from last month
               </p>
             </CardContent>
           </Card>
@@ -130,9 +167,9 @@ const Dashboard = () => {
               <MessageSquare className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">{stats.inquiries}</div>
               <p className="text-xs text-muted-foreground">
-                +0 from last month
+                {stats.inquiries > 0 ? '+' : ''}0 from last month
               </p>
             </CardContent>
           </Card>
@@ -143,9 +180,9 @@ const Dashboard = () => {
               <Star className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">{stats.reviews}</div>
               <p className="text-xs text-muted-foreground">
-                +0 from last month
+                {stats.reviews > 0 ? '+' : ''}0 from last month
               </p>
             </CardContent>
           </Card>
@@ -156,9 +193,9 @@ const Dashboard = () => {
               <Eye className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">{stats.profileViews}</div>
               <p className="text-xs text-muted-foreground">
-                +0 from last month
+                {stats.profileViews > 0 ? '+' : ''}0 from last month
               </p>
             </CardContent>
           </Card>
@@ -204,7 +241,10 @@ const Dashboard = () => {
                   <p className="text-muted-foreground mb-4 max-w-md mx-auto">
                     Tell us about your heritage, craft, and passion. Our AI will weave it into a beautiful narrative.
                   </p>
-                  <Button className="bg-primary hover:bg-primary/90">
+                  <Button 
+                    className="bg-primary hover:bg-primary/90"
+                    onClick={() => setProfileModalOpen(true)}
+                  >
                     <Settings className="w-4 h-4 mr-2" />
                     Set Up Profile
                   </Button>
@@ -219,7 +259,7 @@ const Dashboard = () => {
                 <h2 className="text-2xl font-bold">Products</h2>
                 <p className="text-muted-foreground">Showcase your beautiful creations</p>
               </div>
-              <Button>
+              <Button onClick={() => setProductModalOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Add Product
               </Button>
@@ -233,7 +273,10 @@ const Dashboard = () => {
                   <p className="text-muted-foreground mb-4 max-w-md mx-auto">
                     Upload a photo and let our AI transform it into a stunning product showcase
                   </p>
-                  <Button className="bg-primary hover:bg-primary/90">
+                  <Button 
+                    className="bg-primary hover:bg-primary/90"
+                    onClick={() => setProductModalOpen(true)}
+                  >
                     <Camera className="w-4 h-4 mr-2" />
                     Upload Photo
                   </Button>
@@ -300,6 +343,18 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      <ProfileSetupModal
+        open={profileModalOpen}
+        onOpenChange={setProfileModalOpen}
+        onSuccess={fetchStats}
+      />
+
+      <ProductModal
+        open={productModalOpen}
+        onOpenChange={setProductModalOpen}
+        onSuccess={fetchStats}
+      />
     </div>
   );
 };
