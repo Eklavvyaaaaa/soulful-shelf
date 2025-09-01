@@ -67,12 +67,11 @@ export default {
 				}
 			},
 			backgroundImage: {
-				'warm-gradient': 'var(--warm-gradient)',
-				'earth-gradient': 'var(--earth-gradient)'
+				'minimal-gradient': 'var(--minimal-gradient)'
 			},
 			boxShadow: {
-				'craft': 'var(--craft-shadow)',
-				'gentle': 'var(--gentle-shadow)'
+				'subtle': 'var(--subtle-shadow)',
+				'clean': 'var(--clean-shadow)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
